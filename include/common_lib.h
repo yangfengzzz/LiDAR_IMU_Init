@@ -1,16 +1,14 @@
 #ifndef COMMON_LIB_H
 #define COMMON_LIB_H
 
+#include <deque>
 #include <so3_math.h>
 #include <Eigen/Eigen>
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
-#include <lidar_imu_init/States.h>
-#include <lidar_imu_init/Pose6D.h>
-#include <sensor_msgs/Imu.h>
-#include <nav_msgs/Odometry.h>
-#include <tf/transform_broadcaster.h>
-#include <eigen_conversions/eigen_msg.h>
+#include <lidar_imu_init/msg/pose6_d.hpp>
+#include <lidar_imu_init/msg/states.hpp>
+#include <ros2_compat.hpp>
 #include <color.h>
 #include <scope_timer.hpp>
 
@@ -33,7 +31,7 @@ using namespace Eigen;
 #define DEBUG_FILE_DIR(name)     (string(string(ROOT_DIR) + "Log/"+ name))
 #define RESULT_FILE_DIR(name)    (string(string(ROOT_DIR) + "result/"+ name))
 
-typedef lidar_imu_init::Pose6D     Pose6D;
+typedef lidar_imu_init::msg::Pose6D Pose6D;
 typedef pcl::PointXYZINormal PointType;
 typedef pcl::PointXYZRGB     PointTypeRGB;
 typedef pcl::PointCloud<PointType>    PointCloudXYZI;
@@ -62,7 +60,7 @@ struct MeasureGroup     // Lidar data and imu dates for the curent process
     };
     double lidar_beg_time;
     PointCloudXYZI::Ptr lidar;
-    deque<sensor_msgs::Imu::ConstPtr> imu;
+    deque<sensor_msgs::msg::Imu::ConstSharedPtr> imu;
 };
 
 struct StatesGroup

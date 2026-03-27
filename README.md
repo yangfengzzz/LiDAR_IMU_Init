@@ -48,9 +48,9 @@ our accompanying videos are now available on **YouTube** (click below images to 
 
 ### 1.1 **Ubuntu** and **ROS**
 
-Ubuntu >= 18.04.
+Ubuntu >= 22.04.
 
-ROS    >= Melodic. [ROS Installation](http://wiki.ros.org/ROS/Installation)
+ROS 2 Humble. [ROS Installation](https://docs.ros.org/en/humble/Installation.html)
 
 ### 1.2. **PCL && Eigen**
 
@@ -58,14 +58,15 @@ PCL    >= 1.8,   Follow [PCL Installation](http://www.pointclouds.org/downloads/
 
 Eigen  >= 3.3.4, Follow [Eigen Installation](http://eigen.tuxfamily.org/index.php?title=Main_Page).
 
-### 1.3. **livox_ros_driver**
+### 1.3. **livox_ros_driver2**
 
-Follow [livox_ros_driver Installation](https://github.com/Livox-SDK/livox_ros_driver).
+Follow [livox_ros_driver2 Installation](https://github.com/Livox-SDK/livox_ros_driver2).
 
 *Remarks:*
 
-- Since the **LI_Init** must support Livox serials LiDAR firstly, so the **livox_ros_driver** must be installed and **sourced** before run any LI_Init luanch file.
-- How to source? The easiest way is add the line `source $Livox_ros_driver_dir$/devel/setup.bash` to the end of file `~/.bashrc`, where `$Livox_ros_driver_dir$` is the directory of the livox_ros_driver workspace (should be the `ws_livox` directory if you completely followed the livox official document).
+- Since **LI-Init** must support Livox LiDARs first, `livox_ros_driver2` must be installed and sourced before running the MID-360 launch file.
+- On this computer the Livox ROS 2 workspace is `~/Desktop/ws_livox`, so source `~/Desktop/ws_livox/install/setup.bash` before building or launching `lidar_imu_init`.
+- If you use Conda or Miniforge, make sure the Humble build uses `/usr/bin/python3`. A reliable command is `PATH=/usr/bin:$PATH colcon build --symlink-install`.
 
 ###  **1.4. ceres-solver**
 
@@ -78,14 +79,17 @@ For more information, you can check [docker_start.md](./docker/docker_start.md).
 
 ## 2. Build
 
-Clone the repository and catkin_make:
+Clone the repository and build with `colcon`:
 
 ```
-cd ~/catkin_ws/src
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
 git clone https://github.com/hku-mars/LiDAR_IMU_Init.git
-cd ..
-catkin_make -j
-source devel/setup.bash
+cd ~/ros2_ws
+source /opt/ros/humble/setup.bash
+source ~/Desktop/ws_livox/install/setup.bash
+PATH=/usr/bin:$PATH colcon build --symlink-install
+source install/setup.bash
 ```
 
 ## 3. Run Your Own Data
@@ -119,15 +123,28 @@ Edit `config/xxx.yaml` to set the below parameters:
 
 
 
-After setting the correct topic name and parameters, you can directly run **LI-Init** with your own data..
+After setting the correct topic name and parameters, you can directly run **LI-Init** with your own data.
 
 ```
-cd catkin_ws
-source devel/setup.bash
-roslaunch lidar_imu_init xxx.launch
+cd ~/ros2_ws
+source /opt/ros/humble/setup.bash
+source ~/Desktop/ws_livox/install/setup.bash
+source install/setup.bash
+ros2 launch lidar_imu_init livox_mid360_launch.py rviz:=false start_driver:=true
 ```
 
-After initialization and refinement finished, the result would be written into `catkin_ws/src/LiDAR_IMU_Init/result/Initialization_result.txt`
+The other Humble launch entrypoints are:
+
+```
+ros2 launch lidar_imu_init livox_avia_launch.py
+ros2 launch lidar_imu_init livox_horizon_launch.py
+ros2 launch lidar_imu_init velodyne_launch.py
+ros2 launch lidar_imu_init ouster_launch.py
+ros2 launch lidar_imu_init hesai_pandarXT_launch.py
+ros2 launch lidar_imu_init robosense_launch.py
+```
+
+After initialization and refinement finish, the result is written to `LiDAR_IMU_Init/result/Initialization_result.txt`.
 
 ## 4. Rosbag Example
 
