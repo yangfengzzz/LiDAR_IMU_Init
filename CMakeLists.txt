@@ -46,7 +46,7 @@ find_package(pcl_conversions REQUIRED)
 find_package(pcl_ros REQUIRED)
 set(Python3_EXECUTABLE "/usr/bin/python3" CACHE FILEPATH "System Python for ROS 2 builds" FORCE)
 set(PYTHON_EXECUTABLE "/usr/bin/python3" CACHE FILEPATH "System Python for ROS 2 builds" FORCE)
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development NumPy)
 find_package(rclcpp REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 find_package(sensor_msgs REQUIRED)
@@ -75,6 +75,7 @@ target_include_directories(li_init PRIVATE
   ${EIGEN3_INCLUDE_DIR}
   ${PCL_INCLUDE_DIRS}
   ${Python3_INCLUDE_DIRS}
+  ${Python3_NumPy_INCLUDE_DIRS}
   ${MATPLOTLIB_CPP_INCLUDE_DIRS}
 )
 
